@@ -17,8 +17,8 @@ class Recipe(Base):
     author_id = Column(Integer(), ForeignKey('authors.id'))
 
     def __repr__(self):
-        return f'Recipe {self.name}, ' + \
-            f'{self.ingredients}'
+        return f'Recipe: {self.name}, ' + \
+            f'Ingredients: {self.ingredients}'
     
     # Retrieve all recipes
     @classmethod
@@ -40,16 +40,44 @@ class Recipe(Base):
         if recipe:
             session.delete(recipe)
             session.commit()
-            return "Recipe deleted succesfully"
+            print("Recipe deleted succesfully")
+            return recipe
         else:
-            return "Recipe does not exist!"
+            print("Recipe does not exist!")
+            return None
 
-    # Search for a recipe
+    # Search for a recipe based on the ingredient specified
     @classmethod
-    def search(cls, session, keyword):
-        return session.query(Recipe).filter(Recipe.name.ilike(f'%{keyword}%')).all()
+    def search_by_ingredient(cls, session, ingredient):
+        return session.query(Recipe).filter(Recipe.ingredients.ilike(f'%{ingredient}%')).all()
+
+    # search for a recipe by the author name
+    @classmethod
+    def search_by_author(cls, session, author_name):
+        author = session.query(Author).filter_by(name=author_name).first()
+        if author:
+            recipes = session.query(Recipe).filter_by(author_id=author.id).all()
+            if recipes:
+                return recipes
+            else:
+                print("The author does not have any recipes")
+                return []
+        else:
+            print("Author does not exist!")
+            return []
 
 
+    # search for a recipe by the category name
+    @classmethod
+    def search_by_category(cls, session, category_name):
+        category = session.query(Category).filter_by(name=category_name).first()
+        if category:
+            recipes = session.query(Recipe).filter_by(category_id = category.id).all()
+            return recipes
+        else:
+            print("No such category exists.")
+            return []
+    
 
 # Category class
 class Category(Base):
@@ -61,16 +89,16 @@ class Category(Base):
     recipes = relationship('Recipe', backref=backref('category')) 
 
     def __repr__(self):
-        return f'Category {self.id}, {self.title}'
+        return f'Category: {self.title}'
     
     # Retrieve all categories
     @classmethod
     def all_categories(cls, session):
         categories = session.query(Category).all() 
         if categories:
-            return [category.title for category in categories]
+            return categories
         else:
-            return []
+            return None
 
     # Add a new category
     @classmethod
@@ -87,9 +115,11 @@ class Category(Base):
         if category:
             session.delete(category)
             session.commit()
-            return "Category deleted succesfully!"
+            print("Category deleted succesfully!")
+            return category
         else:
-            return "Category does not exist!"
+            print("Category does not exist!")
+            return None
         
 # Author class
 class Author(Base):
@@ -109,9 +139,10 @@ class Author(Base):
     def all_authors(cls, session):
         authors = session.query(Author).all()
         if authors:
-            return [author.name for author in authors]
+            return authors
         else:
-            return "No author"
+            print("No author")
+            return None
 
     # Add an author
     @classmethod
@@ -128,6 +159,8 @@ class Author(Base):
         if author:
             session.delete(author)
             session.commit()
-            return "Author deleted Succesfully!"
+            print("Author deleted Succesfully!")
+            return author
         else:
-            return "Author does not exist"
+            print("Author does not exist")
+            return None
