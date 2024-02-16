@@ -49,6 +49,8 @@ class Recipe(Base):
     def search(cls, session, keyword):
         return session.query(Recipe).filter(Recipe.name.ilike(f'%{keyword}%')).all()
 
+
+
 # Category class
 class Category(Base):
     __tablename__ = 'categories'    
@@ -59,12 +61,16 @@ class Category(Base):
     recipes = relationship('Recipe', backref=backref('category')) 
 
     def __repr__(self):
-        return f'Category {self.title}'
+        return f'Category {self.id}, {self.title}'
     
     # Retrieve all categories
     @classmethod
     def all_categories(cls, session):
-        return session.query(Category).all()
+        categories = session.query(Category).all() 
+        if categories:
+            return [category.title for category in categories]
+        else:
+            return []
 
     # Add a new category
     @classmethod
@@ -73,7 +79,18 @@ class Category(Base):
         session.add(new_category)
         session.commit()
         return new_category
-
+    
+    # Removing a category
+    @classmethod
+    def remove_category(cls, session, category_id):
+        category = session.query(Category).filter_by(id=category_id).first()
+        if category:
+            session.delete(category)
+            session.commit()
+            return "Category deleted succesfully!"
+        else:
+            return "Category does not exist!"
+        
 # Author class
 class Author(Base):
     __tablename__ = 'authors'
@@ -90,7 +107,11 @@ class Author(Base):
     # Retrieve all authors
     @classmethod
     def all_authors(cls, session):
-        return session.query(Author).all()
+        authors = session.query(Author).all()
+        if authors:
+            return [author.name for author in authors]
+        else:
+            return "No author"
 
     # Add an author
     @classmethod
@@ -99,3 +120,14 @@ class Author(Base):
         session.add(new_author)
         session.commit()
         return new_author
+
+    # Removing an author
+    @classmethod
+    def remove_author(cls, session, author_id):
+        author = session.query(Author).filter_by(id=author_id).first()
+        if author:
+            session.delete(author)
+            session.commit()
+            return "Author deleted Succesfully!"
+        else:
+            return "Author does not exist"
