@@ -1,16 +1,17 @@
-from lib.models import Author
 import click
+from lib.models import Author
 
-from ..main import session
+from db import session
+
+
 # AUTHOR COMMANDS
 
 @click.group()
 def author_commands():
-    pass
+    """Commands for Performing CRUD operations on Authors"""
 
 # Command for retrieving all authors
 @author_commands.command()
-
 def all_authors():
     authors = Author.all_authors(session)
 
@@ -19,7 +20,7 @@ def all_authors():
 
 # Command for adding an author
 @author_commands.command()
-@click.argument('name')
+@click.option('--name', prompt='Author name', help='Author name')
 
 def add_author(name):
     Author.add_author(session, name)
@@ -27,7 +28,7 @@ def add_author(name):
 
 # Command for removing an author
 @author_commands.command()
-@click.argument('author_id')
+@click.option('--author_id', prompt='Author ID', help='Author Id')
 
 def remove_author(author_id):
     Author.remove_author(session, author_id)

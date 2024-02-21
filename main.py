@@ -1,9 +1,11 @@
-from db import session
-import click
+# Use the cli.py as my app's entry point
 
-from commands.recipe_commands import recipe_commands
-from commands.category_commands import category_commands
-from commands.author_commands import author_commands
+import click
+from db import session
+
+from functions.recipe_functions import recipe_commands
+from functions.category_functions import category_commands
+from functions.author_functions import author_commands
 
 
 # Click command group
@@ -23,8 +25,9 @@ def display_menu(options):
     click.echo("***Welcome to Recipe Manager CLI Application***")
     click.echo("Select an option: ")
 
-    for i, option in enumerate(options, 1):
-        click.echo(f"{i}. {option}")
+    for i, option_data in options.items():
+        text = option_data["text"]
+        click.echo(f"{i}. {text}")
 
 # Function to execute selected function based on user choice
 def execute_function(choice, options):
@@ -66,7 +69,7 @@ if __name__ == '__main__':
         7: {"text": "List all categories", "function": category_commands.all_categories},
         8: {"text": "Add a category", "function": category_commands.add_category},
         9: {"text": "Remove a category", "function": category_commands.remove_category},
-        10: {"text": "List all authors", "function": category_commands.all_authors},
+        10: {"text": "List all authors", "function": author_commands.all_authors},
         11: {"text": "Add an author", "function": author_commands.add_author},
         12: {"text": "Remove an author", "function": author_commands.remove_author},
         13: {"text": "Exit", "function": None}
@@ -82,5 +85,3 @@ if __name__ == '__main__':
 
         if not execute_function(choice, options):
             break
-
-        

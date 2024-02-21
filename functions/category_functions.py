@@ -1,14 +1,14 @@
+import click
 from lib.models import Category
 
-import click
 
-from ..main import session
+from db import session
 
 # CATEGORY COMMANDS
 
 @click.group()
 def category_commands():
-    pass
+    """Commands for Performing CRUD operations on Categories"""
 
 # Command for retrieving all categories
 @category_commands.command()
@@ -20,7 +20,7 @@ def all_categories():
 
 # Command for Adding a new category
 @category_commands.command()
-@click.argument('title')
+@click.option('--title', prompt='Category title', help='Category title')
 
 def add_category(title):
     Category.add_category(session, title)
@@ -28,7 +28,7 @@ def add_category(title):
 
 # Command for removing a category
 @category_commands.command()
-@click.argument('category_id')
+@click.option('--category_id', prompt='Category ID', help='Category Id')
 
 def remove_category(category_id):
     Category.remove_category(category_id)

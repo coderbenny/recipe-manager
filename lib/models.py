@@ -70,7 +70,7 @@ class Recipe(Base):
     # search for a recipe by the category name
     @classmethod
     def search_by_category(cls, session, category_name):
-        category = session.query(Category).filter_by(name=category_name).first()
+        category = session.query(Category).filter_by(title=category_name).first()
         if category:
             recipes = session.query(Recipe).filter_by(category_id = category.id).all()
             return recipes
@@ -116,7 +116,6 @@ class Category(Base):
             session.delete(category)
             session.commit()
             print("Category deleted succesfully!")
-            return category
         else:
             print("Category does not exist!")
             return None

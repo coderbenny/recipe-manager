@@ -1,15 +1,14 @@
+import click
 from lib.models import Recipe
 
-import click
 
-from ..main import session
-
+from db import session
 
 # RECIPE COMMANDS
 
 @click.group()
 def recipe_commands():
-    pass
+    """Commands for Performing CRUD operations on Recipes"""
 
 # Command to retrieve all recipes
 @recipe_commands.command()
@@ -27,6 +26,8 @@ def all_recipes():
 @click.option('--author', prompt='Author', help='Author of the recipe')
 
 def create_recipe(name, ingredients, instructions, category, author):
+    from lib.models import Category, Author
+
     category_obj = Category.add_category(session, category)
     author_obj = Author.add_author(session, author)
     Recipe.create_recipe(session, name, ingredients, instructions, category_obj.id, author_obj.id)
@@ -35,7 +36,7 @@ def create_recipe(name, ingredients, instructions, category, author):
 
 # Command to remove a recipe
 @recipe_commands.command() 
-@click.argument('recipe_id', type=int)
+@click.option('--recipe_id', prompt='Recipe ID', help='Recipe Id')
 
 def remove_recipe(recipe_id):
     recipe = Recipe.remove_recipe(session, recipe_id)
@@ -44,7 +45,7 @@ def remove_recipe(recipe_id):
 
 # Command to search for recipe by ingredient
 @recipe_commands.command()
-@click.argument('ingredient')
+@click.option('--ingredient', prompt='Ingredient', help='Recipe ingredient')
 
 def search_by_ingredient(ingredient):
     recipes = Recipe.search_by_ingredient(session, ingredient)
@@ -53,7 +54,7 @@ def search_by_ingredient(ingredient):
 
 # Command to search for recipe by author name
 @recipe_commands.command()
-@click.argument('author_name')
+@click.option('--author_name', prompt='Author name', help='Author name')
 
 def search_by_author(author_name):
     recipes = Recipe.search_by_author(session, author_name)
@@ -62,7 +63,7 @@ def search_by_author(author_name):
 
 # command to search for recipe by category name
 @recipe_commands.command()
-@click.argument('category_name')
+@click.option('--category_name', prompt='Category title', help='Category title')
 
 def search_by_category(category_name):
     recipes = Recipe.search_by_category(session, category_name)
