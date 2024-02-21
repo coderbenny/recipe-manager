@@ -18,7 +18,9 @@ The solution will consist of a CLI application that allows users to perform vari
 
 - Database integration
 - CLI interface
-- Recipe CRUD operations
+- Recipe, Category and Author CRUD operations
 - Ingredient-based recipe search
+- Author-based recipe search
+- Category-based recipe search
 
 By implementing these MVPs, the recipe manager system will provide users with a solid foundation for managing their recipes effectively.
