@@ -1,5 +1,3 @@
-## Original file before I separated logic
-### This file works when run, but the main.py file returns an error when run, I still dont understand why.
 
 import click
 from db import session
